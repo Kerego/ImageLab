@@ -1,6 +1,7 @@
 ﻿using ImageEffects.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,8 @@ namespace ImageEffects
 		{
 			OutputImage = image;
 			InputImage = new SoftwareBitmap(image.BitmapPixelFormat, image.PixelWidth, image.PixelHeight, image.BitmapAlphaMode);
-			OutputImage.CopyTo(OutputImage);
+			OutputImage.CopyTo(InputImage);
+			Debug.Write("bla");
 		}
 
 

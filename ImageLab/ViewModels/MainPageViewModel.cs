@@ -1,4 +1,7 @@
-﻿using ImageLab.Containers;
+﻿using ImageEffects;
+using ImageEffects.Effects;
+using ImageEffects.Interfaces;
+using ImageLab.Containers;
 using ImageLab.Interfaces;
 using Lumia.Imaging;
 using Lumia.Imaging.Adjustments;
@@ -100,7 +103,7 @@ namespace ImageLab.ViewModels
 
 			_modified = new SoftwareBitmap(CurrentImage.BitmapPixelFormat, CurrentImage.PixelWidth, CurrentImage.PixelHeight, CurrentImage.BitmapAlphaMode);
 			CurrentImage.CopyTo(_modified);
-
+			editor = new ImageEditor(CurrentImage);
 			_imageSource = new SoftwareBitmapImageSource(CurrentImage);
 
 			source = _imageSource;
@@ -110,6 +113,8 @@ namespace ImageLab.ViewModels
 			CurrentImageSource = new SoftwareBitmapSource();
 
 			Title = _currentFile.Name;
+
+			
 
 			SystemNavigationManager.GetForCurrentView().BackRequested += NavigateBackRequested;
 			SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
@@ -178,6 +183,9 @@ namespace ImageLab.ViewModels
 
 		IImageProvider source;
 		SoftwareBitmap _modified;
+
+
+		ImageEditor editor;
 		public async Task ApplyEffect()
 		{
 			source = _imageSource;
@@ -227,7 +235,10 @@ namespace ImageLab.ViewModels
 
 			_renderer.Source = source;
 			_modified = await _renderer.RenderAsync();
-			await CurrentImageSource.SetBitmapAsync(_modified);
+			NegationEffect effect = new NegationEffect();
+			effect.Param1 = BrightnessLevel;
+			editor.ApplyPixelEffects(new List<IPixelImageEffect> { effect });
+			await CurrentImageSource.SetBitmapAsync(CurrentImage);
 		}
 	}
 }
