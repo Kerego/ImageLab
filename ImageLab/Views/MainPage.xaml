@@ -1,0 +1,139 @@
+﻿<controls:PageBase
+    x:Class="ImageLab.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ImageLab"
+	xmlns:interfaces="using:ImageLab.Interfaces"
+    xmlns:controls="using:ImageLab.Controls"
+	xmlns:prism="using:Microsoft.Practices.Prism.Mvvm"
+	xmlns:effects="using:Lumia.Imaging.Adjustments"
+	xmlns:converters ="using:ImageLab.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	prism:ViewModelLocator.AutoWireViewModel="True"
+    mc:Ignorable="d"
+	>
+	<controls:PageBase.Resources>
+		<converters:ObjectToWarpingConverter x:Key="Obj2Warp"></converters:ObjectToWarpingConverter>
+		<converters:BooleanToVisibilityConverter x:Key="TrueToVis" />
+	</controls:PageBase.Resources>
+
+
+	<Grid Background="Black">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="11*"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="5*"/>
+			<ColumnDefinition Width="2*"/>
+		</Grid.ColumnDefinitions>
+
+		<!--column 1-->
+		<TextBlock Text="{x:Bind ViewModel.Title, Mode=TwoWay}" Foreground="White" Margin="4,4,0,4" FontSize="32" HorizontalAlignment="Left"/>
+		<Button Content="Save the image"  Click="{x:Bind ViewModel.Save}" x:Name="SaveButton" HorizontalAlignment="Right" Background="White" Foreground="Black"/>
+		<Image x:Name="ChangedImage" Grid.Row="1" Margin="5" Source="{x:Bind ViewModel.CurrentImageSource, Mode=OneWay}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+		<!--column 2-->
+		<ScrollViewer Grid.RowSpan="2" Grid.Column="1" >
+			<StackPanel Margin="10">
+
+				<!--Brightness-->
+				<StackPanel Margin="10" Background="White">
+					
+					<CheckBox IsChecked="{x:Bind ViewModel.BrightnessEnabled, Mode=TwoWay}" 
+							  IsThreeState="False" Content="Brightness" 
+							  Click="{x:Bind ViewModel.ApplyEffect}"
+							  HorizontalAlignment="Center"/>
+
+					<Slider Minimum="-1.0" Maximum="1.0" Margin="20,0" StepFrequency="0.01"
+							Visibility="{x:Bind ViewModel.BrightnessEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}" 
+							ValueChanged="{x:Bind ViewModel.EnqueueEffect}"   
+							Value="{x:Bind ViewModel.BrightnessLevel, Mode=TwoWay}"/>
+				</StackPanel>
+
+				<!--Warping-->
+				<StackPanel Margin="10" Background="White">
+					
+					<CheckBox IsChecked="{x:Bind ViewModel.WarpingEnabled, Mode=TwoWay}" 
+							  IsThreeState="False" Content="Warping" 
+							  Click="{x:Bind ViewModel.ApplyEffect}"
+							  HorizontalAlignment="Center"/>
+
+					<ComboBox HorizontalAlignment="Center" 
+							  SelectionChanged="{x:Bind ViewModel.ApplyEffect}" 
+							  ItemsSource="{x:Bind ViewModel.WarpModes}" 
+							  Visibility="{x:Bind ViewModel.WarpingEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"
+							  SelectedItem="{x:Bind ViewModel.WarpingMode, Converter={StaticResource Obj2Warp},Mode = TwoWay}"/>
+
+					<Slider Minimum="0" Maximum="1.0" StepFrequency="0.01" Margin="20,0" 
+							ValueChanged="{x:Bind ViewModel.EnqueueEffect}"  
+							Value="{x:Bind ViewModel.WarpingLevel, Mode=TwoWay}"
+							Visibility="{x:Bind ViewModel.WarpingEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"/>
+				</StackPanel>
+
+				<!--Rotation-->
+				<StackPanel Margin="10" Background="White">
+
+					<CheckBox IsChecked="{x:Bind ViewModel.RotationEnabled, Mode=TwoWay}" 
+							  IsThreeState="False" Content="Rotation" 
+							  Click="{x:Bind ViewModel.ApplyEffect}"
+							  HorizontalAlignment="Center"/>
+
+					<Slider Minimum="0" Maximum="360" Margin="20,0" StepFrequency="90"
+							Visibility="{x:Bind ViewModel.RotationEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}" 
+							ValueChanged="{x:Bind ViewModel.EnqueueEffect}"   
+							Value="{x:Bind ViewModel.RotationAngle, Mode=TwoWay}"/>
+				</StackPanel>
+
+				<!--Contrast-->
+				<StackPanel Margin="10" Background="White">
+
+					<CheckBox IsChecked="{x:Bind ViewModel.ContrastEnabled, Mode=TwoWay}" 
+							  IsThreeState="False" Content="Contrast" 
+							  Click="{x:Bind ViewModel.ApplyEffect}"
+							  HorizontalAlignment="Center"/>
+
+					<Slider Minimum="-1.0" Maximum="1.0" Margin="20,0" StepFrequency="0.01"
+							Visibility="{x:Bind ViewModel.ContrastEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}" 
+							ValueChanged="{x:Bind ViewModel.EnqueueEffect}"   
+							Value="{x:Bind ViewModel.ContrastLevel, Mode=TwoWay}"/>
+				</StackPanel>
+
+				<!--Saturation-->
+				<StackPanel Margin="10" Background="White">
+
+					<CheckBox IsChecked="{x:Bind ViewModel.SaturationEnabled, Mode=TwoWay}" 
+							  IsThreeState="False" Content="Saturation" 
+							  Click="{x:Bind ViewModel.ApplyEffect}"
+							  HorizontalAlignment="Center"/>
+
+					<Slider Minimum="-1.0" Maximum="1.0" Margin="20,0" StepFrequency="0.01"
+							Visibility="{x:Bind ViewModel.SaturationEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}" 
+							ValueChanged="{x:Bind ViewModel.EnqueueEffect}" 
+							Value="{x:Bind ViewModel.SaturationLevel, Mode=TwoWay}"/>
+
+					<TextBlock Text="Hue" HorizontalAlignment="Center"
+							   Visibility="{x:Bind ViewModel.SaturationEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"/>
+
+					<Slider Minimum="-1.0" Maximum="1.0" Margin="20,0" StepFrequency="0.01"
+							Visibility="{x:Bind ViewModel.SaturationEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}" 
+							ValueChanged="{x:Bind ViewModel.EnqueueEffect}"   
+							Value="{x:Bind ViewModel.SaturationHueLevel, Mode=TwoWay}"/>
+				</StackPanel>
+
+				<!--Negative-->
+				<StackPanel Margin="10" Background="White">
+
+					<CheckBox IsChecked="{x:Bind ViewModel.NegativeEnabled, Mode=TwoWay}" 
+							  IsThreeState="False" Content="Negative" 
+							  Click="{x:Bind ViewModel.ApplyEffect}"
+							  HorizontalAlignment="Center"/>
+				</StackPanel>
+				
+				
+			</StackPanel>
+
+		</ScrollViewer>
+	</Grid>
+</controls:PageBase>
