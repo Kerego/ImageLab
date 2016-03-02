@@ -6,8 +6,5 @@ namespace ImageEffects.Interfaces
 	{
 		string Name { get; set; }
 		Dictionary<string, double> Parameters { get; set; }
-
 	}
-
-
 }

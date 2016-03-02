@@ -25,6 +25,7 @@ namespace ImageEffects
 
 		public unsafe void ApplyKernelEffects(IEnumerable<IKernelImageEffect> effects)
 		{
+
 		}
 
 
