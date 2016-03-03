@@ -5,5 +5,6 @@ namespace ImageEffects.Interfaces
 	public interface IImageEffect
 	{
 		string Name { get; set; }
+		bool Enabled { get; set; }
 	}
 }

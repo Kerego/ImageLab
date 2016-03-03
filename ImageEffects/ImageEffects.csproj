@@ -102,6 +102,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
@@ -109,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Effects\NegationEffect.cs" />
+    <Compile Include="Effects\OneParameterEffect.cs" />
     <Compile Include="ImageEditor.cs" />
     <Compile Include="Interfaces\IImageEffect.cs" />
     <Compile Include="Interfaces\IKernelImageEffect.cs" />

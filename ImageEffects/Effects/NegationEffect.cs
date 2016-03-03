@@ -3,11 +3,9 @@ using System;
 
 namespace ImageEffects.Effects
 {
-	public class NegationEffect : IPixelImageEffect
+	public class NegationEffect : OneParameterEffect, IPixelImageEffect
 	{
-		public string Name { get; set; }
-		public string Param1Label { get; set; }
-		public double Param1 { get; set; }
+		public NegationEffect() : base("Negation", "Level Of Negation", 0, 1, 0.01) { }
 
 		public byte Lerp(int start, int end)
 		{

@@ -10,6 +10,7 @@
 	xmlns:converters ="using:ImageLab.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:one="using:ImageEffects.Effects"
 	prism:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d"
 	>
@@ -36,24 +37,28 @@
 
 		<!--column 2-->
 		<ScrollViewer Grid.RowSpan="2" Grid.Column="1" >
-			<StackPanel Margin="10">
+			<ItemsControl Margin="10" ItemsSource="{x:Bind ViewModel.Effects}">
 
-				<!--Brightness-->
-				<StackPanel Margin="10" Background="White">
-					
-					<CheckBox IsChecked="{x:Bind ViewModel.BrightnessEnabled, Mode=TwoWay}" 
-							  IsThreeState="False" Content="Brightness" 
-							  Click="{x:Bind ViewModel.ApplyEffect}"
-							  HorizontalAlignment="Center"/>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate x:DataType="one:OneParameterEffect">
+						
+						<StackPanel Margin="10" Background="White">
 
-					<Slider Minimum="-1.0" Maximum="1.0" Margin="20,0" StepFrequency="0.01"
-							Visibility="{x:Bind ViewModel.BrightnessEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}" 
-							ValueChanged="{x:Bind ViewModel.EnqueueEffect}"   
-							Value="{x:Bind ViewModel.BrightnessLevel, Mode=TwoWay}"/>
-				</StackPanel>
+							<TextBlock Text="{x:Bind Name}" FontSize="22" Margin="5,0,0,0"/>
+							<ToggleSwitch Margin="5,0,0,0"
+								IsOn="{x:Bind Enabled, Mode=TwoWay}"/>
+							<TextBlock Text="{x:Bind Param1Label }" Margin="5,0,0,0" Foreground="Gray" Visibility="{x:Bind Enabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"/>
+							<Slider Minimum="{x:Bind Param1LimitL}" Maximum="{x:Bind Param1LimitH}" Margin="20,0" StepFrequency="{x:Bind Param1Step}"
+							Visibility="{x:Bind Enabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"
+							Value="{x:Bind Param1, Mode=TwoWay}"/>
+						</StackPanel>
+						
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+				
 
 				<!--Warping-->
-				<StackPanel Margin="10" Background="White">
+				<!--<StackPanel Margin="10" Background="White">
 					
 					<CheckBox IsChecked="{x:Bind ViewModel.WarpingEnabled, Mode=TwoWay}" 
 							  IsThreeState="False" Content="Warping" 
@@ -72,7 +77,7 @@
 							Visibility="{x:Bind ViewModel.WarpingEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"/>
 				</StackPanel>
 
-				<!--Rotation-->
+				--><!--Rotation--><!--
 				<StackPanel Margin="10" Background="White">
 
 					<CheckBox IsChecked="{x:Bind ViewModel.RotationEnabled, Mode=TwoWay}" 
@@ -86,7 +91,7 @@
 							Value="{x:Bind ViewModel.RotationAngle, Mode=TwoWay}"/>
 				</StackPanel>
 
-				<!--Contrast-->
+				--><!--Contrast--><!--
 				<StackPanel Margin="10" Background="White">
 
 					<CheckBox IsChecked="{x:Bind ViewModel.ContrastEnabled, Mode=TwoWay}" 
@@ -100,7 +105,7 @@
 							Value="{x:Bind ViewModel.ContrastLevel, Mode=TwoWay}"/>
 				</StackPanel>
 
-				<!--Saturation-->
+				--><!--Saturation--><!--
 				<StackPanel Margin="10" Background="White">
 
 					<CheckBox IsChecked="{x:Bind ViewModel.SaturationEnabled, Mode=TwoWay}" 
@@ -122,17 +127,14 @@
 							Value="{x:Bind ViewModel.SaturationHueLevel, Mode=TwoWay}"/>
 				</StackPanel>
 
-				<!--Negative-->
+				--><!--Negative--><!--
 				<StackPanel Margin="10" Background="White">
 
 					<CheckBox IsChecked="{x:Bind ViewModel.NegativeEnabled, Mode=TwoWay}" 
 							  IsThreeState="False" Content="Negative" 
 							  Click="{x:Bind ViewModel.ApplyEffect}"
-							  HorizontalAlignment="Center"/>
-				</StackPanel>
-				
-				
-			</StackPanel>
+							  HorizontalAlignment="Center"/>-->
+				</ItemsControl>
 
 		</ScrollViewer>
 	</Grid>
