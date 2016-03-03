@@ -50,15 +50,19 @@ namespace ImageLab.ViewModels
 			_picker.FileTypeFilter.Add(".jpeg");
 		}
 
-		public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
+		public override void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
 		{
 			base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
 
 			if (viewModelState.ContainsKey("containers"))
 			{
 				var items = viewModelState["containers"] as IEnumerable<ImageContainer>;
-				if(items.Any())
-					await ProcessFiles(items.Select(x => x.File));
+				//if(items.Any())
+				//	await ProcessFiles(items.Select(x => x.File));
+				foreach(var item in items)
+				{
+					ContainerList.Add(item);
+				}
 			}
 
 			SystemNavigationManager.GetForCurrentView().BackRequested += NavigateBackRequested; ;

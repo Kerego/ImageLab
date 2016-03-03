@@ -20,11 +20,13 @@ using Windows.UI.Xaml.Navigation;
 
 namespace ImageLab.ViewModels
 {
-	public class MainPageViewModel : ViewModel, IMainPageViewModel
+	public class MainPageViewModel : ViewModel, IMainPageViewModel, IDisposable
 	{
 		private string _title = "test";
 		private INavigationService _navigationService;
 		private StorageFile _currentFile;
+		private IImageProvider _source;
+		private SoftwareBitmap _modified;
 
 		private SoftwareBitmapRenderer _renderer;
 		private SoftwareBitmapImageSource _imageSource;
@@ -33,49 +35,57 @@ namespace ImageLab.ViewModels
 
 		//brightness
 		private double _brightnessLevel;
-		private bool? _brightnessEnabled = false;
+		private bool _brightnessEnabled = false;
 		private BrightnessEffect _brightnessEffect = new BrightnessEffect();
 		public double BrightnessLevel { get { return _brightnessLevel; } set { SetProperty(ref _brightnessLevel, value); } }
-		public bool? BrightnessEnabled { get { return _brightnessEnabled; } set { SetProperty(ref _brightnessEnabled, value); } }
+		public bool BrightnessEnabled { get { return _brightnessEnabled; } set { SetProperty(ref _brightnessEnabled, value); } }
 
 		//contrast
 		private double _contrastLevel;
-		private bool? _contrastEnabled = false;
+		private bool _contrastEnabled = false;
 		private ContrastEffect _contrastEffect = new ContrastEffect();
 		public double ContrastLevel { get { return _contrastLevel; } set { SetProperty(ref _contrastLevel, value); } }
-		public bool? ContrastEnabled { get { return _contrastEnabled; } set { SetProperty(ref _contrastEnabled, value); } }
+		public bool ContrastEnabled { get { return _contrastEnabled; } set { SetProperty(ref _contrastEnabled, value); } }
 
 		//Negative
-		private bool? _negativeEnabled = false;
-		private NegativeEffect _negativeEffect = new NegativeEffect();
-		public bool? NegativeEnabled { get { return _negativeEnabled; } set { SetProperty(ref _negativeEnabled, value); } }
+		private bool _negationEnabled = false;
+		private NegativeEffect _negationEffect = new NegativeEffect();
+		public bool NegationEnabled { get { return _negationEnabled; } set { SetProperty(ref _negationEnabled, value); } }
 
 		//saturation
 		private double _saturationLevel;
 		private double _saturationHueLevel;
-		private bool? _saturationEnabled = false;
+		private bool _saturationEnabled = false;
 		private HueSaturationEffect _saturationEffect = new HueSaturationEffect();
 		public double SaturationLevel { get { return _saturationLevel; } set { SetProperty(ref _saturationLevel, value); } }
 		public double SaturationHueLevel { get { return _saturationHueLevel; } set { SetProperty(ref _saturationHueLevel, value); } }
-		public bool? SaturationEnabled { get { return _saturationEnabled; } set { SetProperty(ref _saturationEnabled, value); } }
+		public bool SaturationEnabled { get { return _saturationEnabled; } set { SetProperty(ref _saturationEnabled, value); } }
 		
 
 		//warping
 		private double _warpingLevel;
 		private WarpMode _warpingMode;
-		private bool? _warpingEnabled = false;
+		private bool _warpingEnabled = false;
 		private WarpingEffect _warpingEffect = new WarpingEffect();
 		public double WarpingLevel { get { return _warpingLevel; } set { SetProperty(ref _warpingLevel, value); } }
-		public bool? WarpingEnabled { get { return _warpingEnabled; } set { SetProperty(ref _warpingEnabled, value); } }
+		public bool WarpingEnabled { get { return _warpingEnabled; } set { SetProperty(ref _warpingEnabled, value); } }
 		public WarpMode WarpingMode { get { return _warpingMode; } set { SetProperty(ref _warpingMode, value); } }
 		public List<WarpMode> WarpModes = Enum.GetValues(typeof(WarpMode)).Cast<WarpMode>().ToList();
 
 		//rotation
 		private double _rotationAngle;
-		private bool? _rotationEnabled = false;
+		private bool _rotationEnabled = false;
 		private RotationEffect _rotationEffect = new RotationEffect();
 		public double RotationAngle { get { return _rotationAngle; } set { SetProperty(ref _rotationAngle, value); } }
-		public bool? RotationEnabled { get { return _rotationEnabled; } set { SetProperty(ref _rotationEnabled, value); } }
+		public bool RotationEnabled { get { return _rotationEnabled; } set { SetProperty(ref _rotationEnabled, value); } }
+
+		//flip
+		private FlipMode _flipMode;
+		private bool _flipEnabled = false;
+		private FlipEffect _flipEffect = new FlipEffect();
+		public bool FlipEnabled { get { return _flipEnabled; } set { SetProperty(ref _flipEnabled, value); } }
+		public FlipMode FlipMode { get { return _flipMode; } set { SetProperty(ref _flipMode, value); } }
+		public List<FlipMode> FlipModes = Enum.GetValues(typeof(FlipMode)).Cast<FlipMode>().ToList();
 
 		#endregion
 
@@ -103,7 +113,7 @@ namespace ImageLab.ViewModels
 
 			_imageSource = new SoftwareBitmapImageSource(CurrentImage);
 
-			source = _imageSource;
+			_source = _imageSource;
 			_renderer = new SoftwareBitmapRenderer();
 			_renderer.SoftwareBitmap = _modified;
 			
@@ -128,9 +138,9 @@ namespace ImageLab.ViewModels
 
 		private async void NavigateBackRequested(object sender, BackRequestedEventArgs e)
 		{
-			MessageDialog dialog = new MessageDialog("test");
-			var t = await dialog.ShowAsync();
-			if(t != null)
+			//MessageDialog dialog = new MessageDialog("test");
+			//var t = await dialog.ShowAsync();
+			if(_navigationService.CanGoBack())
 				_navigationService.GoBack();
 		}
 		
@@ -176,58 +186,79 @@ namespace ImageLab.ViewModels
 			lastChange = -1;
 		}
 
-		IImageProvider source;
-		SoftwareBitmap _modified;
 		public async Task ApplyEffect()
 		{
-			source = _imageSource;
+			_source = _imageSource;
 
-			if (_warpingEnabled.Value)
+			if (_warpingEnabled)
 			{
 				_warpingEffect.Level = _warpingLevel;
-				_warpingEffect.Source = source;
+				_warpingEffect.Source = _source;
 				_warpingEffect.WarpMode = WarpingMode;
-				source = _warpingEffect;
+				_source = _warpingEffect;
 			}
 
-			if (_brightnessEnabled.Value)
+			if (_brightnessEnabled)
 			{
 				_brightnessEffect.Level = _brightnessLevel;
-				_brightnessEffect.Source = source;
-				source = _brightnessEffect;
+				_brightnessEffect.Source = _source;
+				_source = _brightnessEffect;
 			}
 
-			if (_saturationEnabled.Value)
+			if (_saturationEnabled)
 			{
 				_saturationEffect.Saturation = _saturationLevel;
 				_saturationEffect.Hue = _saturationHueLevel;
-				_saturationEffect.Source = source;
-				source = _saturationEffect;
+				_saturationEffect.Source = _source;
+				_source = _saturationEffect;
 			}
 
-			if (_contrastEnabled.Value)
+			if (_contrastEnabled)
 			{
 				_contrastEffect.Level = _contrastLevel;
-				_contrastEffect.Source = source;
-				source = _contrastEffect;
+				_contrastEffect.Source = _source;
+				_source = _contrastEffect;
 			}
 
-			if (_negativeEnabled.Value)
+			if (_negationEnabled)
 			{
-				_negativeEffect.Source = source;
-				source = _negativeEffect;
+				_negationEffect.Source = _source;
+				_source = _negationEffect;
 			}
 
-			if (_rotationEnabled.Value)
+			if (_rotationEnabled)
 			{
 				_rotationEffect.RotationAngle = _rotationAngle;
-				_rotationEffect.Source = source;
-				source = _rotationEffect;
+				_rotationEffect.Source = _source;
+				_source = _rotationEffect;
+			}
+			if (_flipEnabled)
+			{
+				_flipEffect.Source = _source;
+				_flipEffect.FlipMode = _flipMode;
+				_source = _flipEffect;
 			}
 
-			_renderer.Source = source;
+
+			_renderer.Source = _source;
 			_modified = await _renderer.RenderAsync();
 			await CurrentImageSource.SetBitmapAsync(_modified);
+		}
+
+		public void Dispose()
+		{
+			_modified.Dispose();
+			_renderer.Dispose();
+			_imageSource.Dispose();
+			_brightnessEffect.Dispose();
+			_contrastEffect.Dispose();
+			_negationEffect.Dispose();
+			_saturationEffect.Dispose();
+			_warpingEffect.Dispose();
+			_rotationEffect.Dispose();
+			_flipEffect.Dispose();
+			CurrentImage.Dispose();
+			CurrentImageSource.Dispose();
 		}
 	}
 }

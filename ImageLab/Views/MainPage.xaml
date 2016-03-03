@@ -30,56 +30,127 @@
 		</Grid.ColumnDefinitions>
 
 		<!--column 1-->
-		<TextBlock Text="{x:Bind ViewModel.Title, Mode=TwoWay}" Foreground="White" Margin="4,4,0,4" FontSize="32" HorizontalAlignment="Left"/>
-		<Button Content="Save the image"  Click="{x:Bind ViewModel.Save}" x:Name="SaveButton" HorizontalAlignment="Right" Background="White" Foreground="Black"/>
-		<Image x:Name="ChangedImage" Grid.Row="1" Margin="5" Source="{x:Bind ViewModel.CurrentImageSource, Mode=OneWay}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+		<TextBlock Text="{x:Bind ViewModel.Title, Mode=TwoWay}" 
+				   Foreground="White" 
+				   Margin="4,4,0,4"
+				   FontSize="32" 
+				   HorizontalAlignment="Left"/>
+		<Button Content="Save the image" 
+				Click="{x:Bind ViewModel.Save}" 
+				x:Name="SaveButton" 
+				HorizontalAlignment="Right" 
+				Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}" 
+				Foreground="Black"/>
+		<Image x:Name="ImageControl" 
+				Grid.Row="1" 
+				Margin="5" 
+				Source="{x:Bind ViewModel.CurrentImageSource, Mode=OneWay}" 
+				Stretch="Uniform"
+				HorizontalAlignment="Stretch" 
+				VerticalAlignment="Stretch"/>
 
 		<!--column 2-->
-		<ScrollViewer Grid.RowSpan="2" Grid.Column="1" >
+		<Button Content="&#xE109;" 
+				FontFamily="Segoe MDL2 Assets"
+				Grid.Column="1"
+				HorizontalAlignment="Center" 
+				Style="{StaticResource DarkTheme}"
+				Foreground="White"
+				Height="60"
+				Width="60"
+				FontSize="23"
+				x:Name="addButton"
+				Command="{x:Bind AddCommand}"
+				CommandParameter="{Binding ElementName=addButton}"/>
+		
+		<ScrollViewer Grid.Column="1" Grid.Row="1" >
 			<StackPanel Margin="10">
 
 				<!--Brightness-->
-				<StackPanel Margin="10" Background="White">
-					
-					<CheckBox IsChecked="{x:Bind ViewModel.BrightnessEnabled, Mode=TwoWay}" 
-							  IsThreeState="False" Content="Brightness" 
-							  Click="{x:Bind ViewModel.ApplyEffect}"
-							  HorizontalAlignment="Center"/>
+				<StackPanel Margin="10" 
+							Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}" 
+							Visibility="{x:Bind ViewModel.BrightnessEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"
+							RightTapped="StackPanel_RightTapped">
 
+					<FlyoutBase.AttachedFlyout>
+						<MenuFlyout>
+							<MenuFlyoutItem	Command = "{x:Bind RemoveCommand}"
+											CommandParameter = "Brightness Modifier"
+											Text="Remove"/>
+						</MenuFlyout>
+					</FlyoutBase.AttachedFlyout>
+
+					<TextBlock FontSize="24" Margin="5,2,0,2" HorizontalAlignment="Center" Padding="2,0,0,0">
+						 Brightness</TextBlock>
 					<Slider Minimum="-1.0" Maximum="1.0" Margin="20,0" StepFrequency="0.01"
 							Visibility="{x:Bind ViewModel.BrightnessEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}" 
 							ValueChanged="{x:Bind ViewModel.EnqueueEffect}"   
 							Value="{x:Bind ViewModel.BrightnessLevel, Mode=TwoWay}"/>
+					
 				</StackPanel>
 
 				<!--Warping-->
-				<StackPanel Margin="10" Background="White">
+				<StackPanel Margin="10" Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}"
+							Visibility="{x:Bind ViewModel.WarpingEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"
+							RightTapped="StackPanel_RightTapped">
 					
-					<CheckBox IsChecked="{x:Bind ViewModel.WarpingEnabled, Mode=TwoWay}" 
-							  IsThreeState="False" Content="Warping" 
-							  Click="{x:Bind ViewModel.ApplyEffect}"
-							  HorizontalAlignment="Center"/>
+					<FlyoutBase.AttachedFlyout>
+						<MenuFlyout>
+							<MenuFlyoutItem Command = "{x:Bind RemoveCommand}"
+											CommandParameter = "Warping Modifier"
+											Text="Remove"/>
+						</MenuFlyout>
+					</FlyoutBase.AttachedFlyout>
 
+
+					<TextBlock FontSize="24" Margin="5,2,0,2" HorizontalAlignment="Center" Padding="2,0,0,0" >Warping</TextBlock>
 					<ComboBox HorizontalAlignment="Center" 
 							  SelectionChanged="{x:Bind ViewModel.ApplyEffect}" 
 							  ItemsSource="{x:Bind ViewModel.WarpModes}" 
-							  Visibility="{x:Bind ViewModel.WarpingEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"
 							  SelectedItem="{x:Bind ViewModel.WarpingMode, Converter={StaticResource Obj2Warp},Mode = TwoWay}"/>
 
 					<Slider Minimum="0" Maximum="1.0" StepFrequency="0.01" Margin="20,0" 
 							ValueChanged="{x:Bind ViewModel.EnqueueEffect}"  
-							Value="{x:Bind ViewModel.WarpingLevel, Mode=TwoWay}"
-							Visibility="{x:Bind ViewModel.WarpingEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"/>
+							Value="{x:Bind ViewModel.WarpingLevel, Mode=TwoWay}"/>
 				</StackPanel>
 
+				<!--Flip-->
+				<StackPanel Margin="10" Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}"
+							Visibility="{x:Bind ViewModel.FlipEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"
+							RightTapped="StackPanel_RightTapped" >
+
+					<FlyoutBase.AttachedFlyout>
+						<MenuFlyout>
+							<MenuFlyoutItem Command = "{x:Bind RemoveCommand}"
+											CommandParameter = "Flip Modifier"
+											Text="Remove"/>
+						</MenuFlyout>
+					</FlyoutBase.AttachedFlyout>
+
+
+					<TextBlock FontSize="24" Margin="5,2,0,2" HorizontalAlignment="Center" Padding="2,0,0,0">Flip</TextBlock>
+					<ComboBox HorizontalAlignment="Center" Margin="15,2,0,2" 
+							  SelectionChanged="{x:Bind ViewModel.EnqueueEffect}" 
+							  ItemsSource="{x:Bind ViewModel.FlipModes}" 
+							  SelectedItem="{x:Bind ViewModel.FlipMode, Converter={StaticResource Obj2Warp}, Mode = TwoWay}"/>
+
+				</StackPanel>
+
+
 				<!--Rotation-->
-				<StackPanel Margin="10" Background="White">
+				<StackPanel Margin="10" Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}"
+							Visibility="{x:Bind ViewModel.RotationEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"
+							RightTapped="StackPanel_RightTapped">
+					<FlyoutBase.AttachedFlyout>
+						<MenuFlyout>
+							<MenuFlyoutItem Command = "{x:Bind RemoveCommand}"
+											CommandParameter = "Rotation Modifier"
+											Text="Remove"/>
+						</MenuFlyout>
+					</FlyoutBase.AttachedFlyout>
 
-					<CheckBox IsChecked="{x:Bind ViewModel.RotationEnabled, Mode=TwoWay}" 
-							  IsThreeState="False" Content="Rotation" 
-							  Click="{x:Bind ViewModel.ApplyEffect}"
-							  HorizontalAlignment="Center"/>
 
+					<TextBlock FontSize="24" Margin="5,2,0,2" HorizontalAlignment="Center" Padding="2,0,0,0">Rotation</TextBlock>
 					<Slider Minimum="0" Maximum="360" Margin="20,0" StepFrequency="90"
 							Visibility="{x:Bind ViewModel.RotationEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}" 
 							ValueChanged="{x:Bind ViewModel.EnqueueEffect}"   
@@ -87,13 +158,18 @@
 				</StackPanel>
 
 				<!--Contrast-->
-				<StackPanel Margin="10" Background="White">
+				<StackPanel Margin="10" Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}"
+							Visibility="{x:Bind ViewModel.ContrastEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"
+							RightTapped="StackPanel_RightTapped">
+					<FlyoutBase.AttachedFlyout>
+						<MenuFlyout>
+							<MenuFlyoutItem Command = "{x:Bind RemoveCommand}"
+											CommandParameter = "Contrast Modifier"
+											Text="Remove"/>
+						</MenuFlyout>
+					</FlyoutBase.AttachedFlyout>
 
-					<CheckBox IsChecked="{x:Bind ViewModel.ContrastEnabled, Mode=TwoWay}" 
-							  IsThreeState="False" Content="Contrast" 
-							  Click="{x:Bind ViewModel.ApplyEffect}"
-							  HorizontalAlignment="Center"/>
-
+					<TextBlock FontSize="24" Margin="5,2,0,2" HorizontalAlignment="Center" Padding="2,0,0,0">Contrast</TextBlock>
 					<Slider Minimum="-1.0" Maximum="1.0" Margin="20,0" StepFrequency="0.01"
 							Visibility="{x:Bind ViewModel.ContrastEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}" 
 							ValueChanged="{x:Bind ViewModel.EnqueueEffect}"   
@@ -101,13 +177,18 @@
 				</StackPanel>
 
 				<!--Saturation-->
-				<StackPanel Margin="10" Background="White">
+				<StackPanel Margin="10" Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}"
+							Visibility="{x:Bind ViewModel.SaturationEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"
+							RightTapped="StackPanel_RightTapped">
+					<FlyoutBase.AttachedFlyout>
+						<MenuFlyout>
+							<MenuFlyoutItem Command = "{x:Bind RemoveCommand}"
+											CommandParameter = "Saturation Modifier"
+											Text="Remove"/>
+						</MenuFlyout>
+					</FlyoutBase.AttachedFlyout>
 
-					<CheckBox IsChecked="{x:Bind ViewModel.SaturationEnabled, Mode=TwoWay}" 
-							  IsThreeState="False" Content="Saturation" 
-							  Click="{x:Bind ViewModel.ApplyEffect}"
-							  HorizontalAlignment="Center"/>
-
+					<TextBlock FontSize="24" Margin="5,2,0,2" HorizontalAlignment="Center" Padding="2,0,0,0">Saturation</TextBlock>
 					<Slider Minimum="-1.0" Maximum="1.0" Margin="20,0" StepFrequency="0.01"
 							Visibility="{x:Bind ViewModel.SaturationEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}" 
 							ValueChanged="{x:Bind ViewModel.EnqueueEffect}" 
@@ -123,15 +204,19 @@
 				</StackPanel>
 
 				<!--Negative-->
-				<StackPanel Margin="10" Background="White">
-
-					<CheckBox IsChecked="{x:Bind ViewModel.NegativeEnabled, Mode=TwoWay}" 
-							  IsThreeState="False" Content="Negative" 
-							  Click="{x:Bind ViewModel.ApplyEffect}"
-							  HorizontalAlignment="Center"/>
+				<StackPanel Margin="10" Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}" 
+							Visibility="{x:Bind ViewModel.NegationEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"
+							RightTapped="StackPanel_RightTapped">
+					<FlyoutBase.AttachedFlyout>
+						<MenuFlyout>
+							<MenuFlyoutItem Command = "{x:Bind RemoveCommand}"
+											CommandParameter = "Negation Modifier"
+											Text="Remove"/>
+						</MenuFlyout>
+					</FlyoutBase.AttachedFlyout>
+					<TextBlock FontSize="24" Margin="5,2,0,2" HorizontalAlignment="Center" Padding="2,0,0,0">Negation</TextBlock>
 				</StackPanel>
-				
-				
+
 			</StackPanel>
 
 		</ScrollViewer>
