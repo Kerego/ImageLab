@@ -8,11 +8,13 @@ using Windows.UI.Xaml.Data;
 
 namespace ImageLab.Converters
 {
-	public class ObjectToWarpingConverter : IValueConverter
+	public class ObjectToEnumConverter : IValueConverter
 	{
 		public bool Reverse { get; set; }
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{
+			if (value == null)
+				return value;
 			return Enum.Parse(value.GetType(), value.ToString());
 		}
 

@@ -43,11 +43,11 @@
 								<MenuFlyoutItem x:Name="EditButton" 
 												Command="{Binding ViewModel.EditCommand, ElementName=page}"
 												CommandParameter="{Binding }"
-                                                Text="Edit"/>
+												Text="Edit"/>
 								<MenuFlyoutItem x:Name="DeleteButton"
 												Command="{Binding ViewModel.RemoveCommand, ElementName=page}"
 												CommandParameter="{Binding }"
-                                                Text="Remove"/>
+												Text="Remove"/>
 							</MenuFlyout>
 						</FlyoutBase.AttachedFlyout>
 					</Border>
@@ -55,11 +55,17 @@
 			</GridView.ItemTemplate>
 			
 		</GridView>
+
+		<StackPanel  Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+			<Button Grid.Row="1" FontFamily="Segoe MDL2 Assets" Content="&#xE109;" FontSize="35" Click="{x:Bind ViewModel.AddFiles}"
+				Foreground="White" Background="Transparent" HorizontalAlignment="Center" Style="{StaticResource DarkTheme}" VerticalAlignment="Center"/>
+
+			<Button Grid.Row="1" FontFamily="Segoe MDL2 Assets" Content="&#xE8CE;" FontSize="35" Click="{x:Bind ViewModel.StartSlideShow}"
+				Foreground="White" Background="Transparent" HorizontalAlignment="Center" Style="{StaticResource DarkTheme}" VerticalAlignment="Center"
+				Visibility="{x:Bind ViewModel.IsEmpty, Converter={StaticResource FalseToVis}, Mode=OneWay}" />
+		</StackPanel>
 		
-		<Button Grid.Row="1" FontFamily="Segoe MDL2 Assets" Content="&#xE109;" FontSize="35" Click="{x:Bind ViewModel.AddFiles}"
-				Foreground="White" Background="Transparent" HorizontalAlignment="Center" Style="{StaticResource DarkTheme}" VerticalAlignment="Center">
-			
-		</Button>
-		
+
+
 	</Grid>
 </controls:PageBase>

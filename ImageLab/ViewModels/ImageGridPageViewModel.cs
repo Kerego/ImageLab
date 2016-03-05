@@ -106,6 +106,11 @@ namespace ImageLab.ViewModels
 			await ProcessFiles(files);
 		}
 
+		public async Task StartSlideShow()
+		{
+			_navigationService.Navigate(Experiences.SlideShow.ToString(), ContainerList.ToList());
+		}
+
 		public async Task ProcessFiles(IEnumerable<StorageFile> files)
 		{
 			foreach(var file in files.Where(x=>ContainerList.Count(y=>y.File.Path == x.Path) == 0))

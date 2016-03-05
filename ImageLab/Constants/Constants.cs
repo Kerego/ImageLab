@@ -5,7 +5,8 @@
 		public enum Experiences
 		{
 			Main,
-			ImageGrid
+			ImageGrid,
+			SlideShow
 		}
 	}
 }

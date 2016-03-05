@@ -8,14 +8,110 @@
 	xmlns:prism="using:Microsoft.Practices.Prism.Mvvm"
 	xmlns:effects="using:Lumia.Imaging.Adjustments"
 	xmlns:converters ="using:ImageLab.Converters"
+	xmlns:con="using:ImageLab.Containers"
+	xmlns:selectors="using:ImageLab.TemplateSelectors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	prism:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d"
 	>
 	<controls:PageBase.Resources>
-		<converters:ObjectToWarpingConverter x:Key="Obj2Warp"></converters:ObjectToWarpingConverter>
+		<converters:ObjectToEnumConverter x:Key="Obj2Enum"/>
 		<converters:BooleanToVisibilityConverter x:Key="TrueToVis" />
+
+		<DataTemplate x:Key="OneParameterTemplate" x:DataType="con:IOneParam">
+			<StackPanel Margin="10" 
+							Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}" 
+							RightTapped="StackPanel_RightTapped">
+
+				<TextBlock FontSize="24" Margin="5,2,0,2" Text="{x:Bind Name}" HorizontalAlignment="Center" Padding="2,0,0,0"></TextBlock>
+				<TextBlock FontSize="18" Margin="5,2,0,2" Text="{x:Bind Param1Label}" HorizontalAlignment="Left" Padding="2,0,0,0"/>
+				<Slider Minimum="{x:Bind Param1L}" Maximum="{x:Bind Param1H}" Margin="20,0" StepFrequency="{x:Bind Param1Step}" 
+							Value="{x:Bind Param1, Mode=TwoWay}"/>
+
+			</StackPanel>
+		</DataTemplate>
+		
+		<DataTemplate x:Key="NoParameterTemplate"  x:DataType="con:INoParam">
+			<StackPanel Margin="10" 
+							Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}" 
+							RightTapped="StackPanel_RightTapped">
+
+				<TextBlock FontSize="24" Margin="5,2,0,2" Text="{x:Bind Name}" HorizontalAlignment="Center" Padding="2,0,0,0"></TextBlock>
+
+			</StackPanel>
+		</DataTemplate>
+		
+		<DataTemplate x:Key="TwoParameterTemplate"  x:DataType="con:ITwoParam">
+			<StackPanel Margin="10" 
+							Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}" 
+							RightTapped="StackPanel_RightTapped">
+
+				<TextBlock FontSize="24" Margin="5,2,0,2" Text="{x:Bind Name}" HorizontalAlignment="Center" Padding="2,0,0,0"/>
+				
+				<TextBlock FontSize="18" Margin="5,2,0,2" Text="{x:Bind Param1Label}" HorizontalAlignment="Left" Padding="2,0,0,0"/>
+				<Slider Minimum="{x:Bind Param1L}" Maximum="{x:Bind Param1H}" Margin="20,0" StepFrequency="{x:Bind Param1Step}" Value="{x:Bind Param1, Mode=TwoWay}"/>
+				
+				<TextBlock FontSize="18" Margin="5,2,0,2" Text="{x:Bind Param2Label}" HorizontalAlignment="Left" Padding="2,0,0,0"/>
+				<Slider Minimum="{x:Bind Param2L}" Maximum="{x:Bind Param2H}" Margin="20,0" StepFrequency="{x:Bind Param2Step}" Value="{x:Bind Param2, Mode=TwoWay}"/>
+			</StackPanel>
+		</DataTemplate>
+
+		<DataTemplate x:Key="ThreeParameterTemplate"  x:DataType="con:IThreeParam">
+			<StackPanel Margin="10" 
+							Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}" 
+							RightTapped="StackPanel_RightTapped">
+
+				<TextBlock FontSize="24" Margin="5,2,0,2" Text="{x:Bind Name}" HorizontalAlignment="Center" Padding="2,0,0,0"/>
+
+				<TextBlock FontSize="18" Margin="5,2,0,2" Text="{x:Bind Param1Label}" HorizontalAlignment="Left" Padding="2,0,0,0"/>
+				<Slider Minimum="{x:Bind Param1L}" Maximum="{x:Bind Param1H}" Margin="20,0" StepFrequency="{x:Bind Param1Step}" Value="{x:Bind Param1, Mode=TwoWay}"/>
+
+				<TextBlock FontSize="18" Margin="5,2,0,2" Text="{x:Bind Param2Label}" HorizontalAlignment="Left" Padding="2,0,0,0"/>
+				<Slider Minimum="{x:Bind Param2L}" Maximum="{x:Bind Param2H}" Margin="20,0" StepFrequency="{x:Bind Param2Step}" Value="{x:Bind Param2, Mode=TwoWay}"/>
+				
+				<TextBlock FontSize="18" Margin="5,2,0,2" Text="{x:Bind Param3Label}" HorizontalAlignment="Left" Padding="2,0,0,0"/>
+				<Slider Minimum="{x:Bind Param3L}" Maximum="{x:Bind Param3H}" Margin="20,0" StepFrequency="{x:Bind Param3Step}" Value="{x:Bind Param3, Mode=TwoWay}"/>
+			</StackPanel>
+		</DataTemplate>
+
+		<DataTemplate x:Key="EnumParameterTemplate"  x:DataType="con:IEnumParam">
+			<StackPanel Margin="10" HorizontalAlignment="Stretch"
+							Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}" 
+							RightTapped="StackPanel_RightTapped">
+
+				<TextBlock FontSize="24" Margin="5,2,0,2" Text="{x:Bind Name}" HorizontalAlignment="Center" Padding="2,0,0,0"></TextBlock>
+				<ComboBox HorizontalAlignment="Center" Margin="15,2,0,2" 
+							  ItemsSource="{x:Bind Modes}" 
+							  SelectedItem="{x:Bind Mode, Converter={StaticResource Obj2Enum}, Mode = TwoWay}"/>
+			</StackPanel>
+		</DataTemplate>
+
+		<DataTemplate x:Key="EnumOneParameterTemplate"  x:DataType="con:IEnumOneParam">
+			<StackPanel Margin="10" 
+							Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}" 
+							RightTapped="StackPanel_RightTapped">
+
+				<TextBlock FontSize="24" Margin="5,2,0,2" Text="{x:Bind Name}" HorizontalAlignment="Center" Padding="2,0,0,0"></TextBlock>
+				<ComboBox HorizontalAlignment="Center" Margin="15,2,0,2" 
+							  ItemsSource="{x:Bind Modes}" 
+							  SelectedItem="{x:Bind Mode, Converter={StaticResource Obj2Enum}, Mode = TwoWay}"/>
+				<TextBlock FontSize="18" Margin="5,2,0,2" Text="{x:Bind Param1Label}" HorizontalAlignment="Left" Padding="2,0,0,0"></TextBlock>
+				<Slider Minimum="{x:Bind Param1L}" Maximum="{x:Bind Param1H}" Margin="20,0" StepFrequency="{x:Bind Param1Step}" 
+							Value="{x:Bind Param1, Mode=TwoWay}"/>
+			</StackPanel>
+		</DataTemplate>
+
+		<selectors:EffectContainerTemplateSelector 
+					x:Key="EffectTemplateSelector"
+					NoParameterTemplate="{StaticResource NoParameterTemplate}" 
+					OneParameterTemplate="{StaticResource OneParameterTemplate}"
+					TwoParameterTemplate="{StaticResource TwoParameterTemplate}"
+					ThreeParameterTemplate="{StaticResource ThreeParameterTemplate}"
+					EnumParameterTemplate="{StaticResource EnumParameterTemplate}"
+					EnumOneParameterTemplate="{StaticResource EnumOneParameterTemplate}"/>
+
+
 	</controls:PageBase.Resources>
 
 
@@ -59,166 +155,16 @@
 				Height="60"
 				Width="60"
 				FontSize="23"
-				x:Name="addButton"
-				Command="{x:Bind AddCommand}"
-				CommandParameter="{Binding ElementName=addButton}"/>
+				Click="{x:Bind AddEffect}"/>
+
+		<ListView SelectionMode="None" HorizontalContentAlignment="Center" Grid.Column="1" Grid.Row="1" ItemsSource="{x:Bind ViewModel.ContainerList}"
+				ItemTemplateSelector="{StaticResource EffectTemplateSelector}">
+			<ListView.ItemContainerStyle>
+				<Style TargetType="ListViewItem">
+					<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+				</Style>
+			</ListView.ItemContainerStyle>
+		</ListView>
 		
-		<ScrollViewer Grid.Column="1" Grid.Row="1" >
-			<StackPanel Margin="10">
-
-				<!--Brightness-->
-				<StackPanel Margin="10" 
-							Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}" 
-							Visibility="{x:Bind ViewModel.BrightnessEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"
-							RightTapped="StackPanel_RightTapped">
-
-					<FlyoutBase.AttachedFlyout>
-						<MenuFlyout>
-							<MenuFlyoutItem	Command = "{x:Bind RemoveCommand}"
-											CommandParameter = "Brightness Modifier"
-											Text="Remove"/>
-						</MenuFlyout>
-					</FlyoutBase.AttachedFlyout>
-
-					<TextBlock FontSize="24" Margin="5,2,0,2" HorizontalAlignment="Center" Padding="2,0,0,0">
-						 Brightness</TextBlock>
-					<Slider Minimum="-1.0" Maximum="1.0" Margin="20,0" StepFrequency="0.01"
-							Visibility="{x:Bind ViewModel.BrightnessEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}" 
-							ValueChanged="{x:Bind ViewModel.EnqueueEffect}"   
-							Value="{x:Bind ViewModel.BrightnessLevel, Mode=TwoWay}"/>
-					
-				</StackPanel>
-
-				<!--Warping-->
-				<StackPanel Margin="10" Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}"
-							Visibility="{x:Bind ViewModel.WarpingEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"
-							RightTapped="StackPanel_RightTapped">
-					
-					<FlyoutBase.AttachedFlyout>
-						<MenuFlyout>
-							<MenuFlyoutItem Command = "{x:Bind RemoveCommand}"
-											CommandParameter = "Warping Modifier"
-											Text="Remove"/>
-						</MenuFlyout>
-					</FlyoutBase.AttachedFlyout>
-
-
-					<TextBlock FontSize="24" Margin="5,2,0,2" HorizontalAlignment="Center" Padding="2,0,0,0" >Warping</TextBlock>
-					<ComboBox HorizontalAlignment="Center" 
-							  SelectionChanged="{x:Bind ViewModel.ApplyEffect}" 
-							  ItemsSource="{x:Bind ViewModel.WarpModes}" 
-							  SelectedItem="{x:Bind ViewModel.WarpingMode, Converter={StaticResource Obj2Warp},Mode = TwoWay}"/>
-
-					<Slider Minimum="0" Maximum="1.0" StepFrequency="0.01" Margin="20,0" 
-							ValueChanged="{x:Bind ViewModel.EnqueueEffect}"  
-							Value="{x:Bind ViewModel.WarpingLevel, Mode=TwoWay}"/>
-				</StackPanel>
-
-				<!--Flip-->
-				<StackPanel Margin="10" Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}"
-							Visibility="{x:Bind ViewModel.FlipEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"
-							RightTapped="StackPanel_RightTapped" >
-
-					<FlyoutBase.AttachedFlyout>
-						<MenuFlyout>
-							<MenuFlyoutItem Command = "{x:Bind RemoveCommand}"
-											CommandParameter = "Flip Modifier"
-											Text="Remove"/>
-						</MenuFlyout>
-					</FlyoutBase.AttachedFlyout>
-
-
-					<TextBlock FontSize="24" Margin="5,2,0,2" HorizontalAlignment="Center" Padding="2,0,0,0">Flip</TextBlock>
-					<ComboBox HorizontalAlignment="Center" Margin="15,2,0,2" 
-							  SelectionChanged="{x:Bind ViewModel.EnqueueEffect}" 
-							  ItemsSource="{x:Bind ViewModel.FlipModes}" 
-							  SelectedItem="{x:Bind ViewModel.FlipMode, Converter={StaticResource Obj2Warp}, Mode = TwoWay}"/>
-
-				</StackPanel>
-
-
-				<!--Rotation-->
-				<StackPanel Margin="10" Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}"
-							Visibility="{x:Bind ViewModel.RotationEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"
-							RightTapped="StackPanel_RightTapped">
-					<FlyoutBase.AttachedFlyout>
-						<MenuFlyout>
-							<MenuFlyoutItem Command = "{x:Bind RemoveCommand}"
-											CommandParameter = "Rotation Modifier"
-											Text="Remove"/>
-						</MenuFlyout>
-					</FlyoutBase.AttachedFlyout>
-
-
-					<TextBlock FontSize="24" Margin="5,2,0,2" HorizontalAlignment="Center" Padding="2,0,0,0">Rotation</TextBlock>
-					<Slider Minimum="0" Maximum="360" Margin="20,0" StepFrequency="90"
-							Visibility="{x:Bind ViewModel.RotationEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}" 
-							ValueChanged="{x:Bind ViewModel.EnqueueEffect}"   
-							Value="{x:Bind ViewModel.RotationAngle, Mode=TwoWay}"/>
-				</StackPanel>
-
-				<!--Contrast-->
-				<StackPanel Margin="10" Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}"
-							Visibility="{x:Bind ViewModel.ContrastEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"
-							RightTapped="StackPanel_RightTapped">
-					<FlyoutBase.AttachedFlyout>
-						<MenuFlyout>
-							<MenuFlyoutItem Command = "{x:Bind RemoveCommand}"
-											CommandParameter = "Contrast Modifier"
-											Text="Remove"/>
-						</MenuFlyout>
-					</FlyoutBase.AttachedFlyout>
-
-					<TextBlock FontSize="24" Margin="5,2,0,2" HorizontalAlignment="Center" Padding="2,0,0,0">Contrast</TextBlock>
-					<Slider Minimum="-1.0" Maximum="1.0" Margin="20,0" StepFrequency="0.01"
-							Visibility="{x:Bind ViewModel.ContrastEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}" 
-							ValueChanged="{x:Bind ViewModel.EnqueueEffect}"   
-							Value="{x:Bind ViewModel.ContrastLevel, Mode=TwoWay}"/>
-				</StackPanel>
-
-				<!--Saturation-->
-				<StackPanel Margin="10" Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}"
-							Visibility="{x:Bind ViewModel.SaturationEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"
-							RightTapped="StackPanel_RightTapped">
-					<FlyoutBase.AttachedFlyout>
-						<MenuFlyout>
-							<MenuFlyoutItem Command = "{x:Bind RemoveCommand}"
-											CommandParameter = "Saturation Modifier"
-											Text="Remove"/>
-						</MenuFlyout>
-					</FlyoutBase.AttachedFlyout>
-
-					<TextBlock FontSize="24" Margin="5,2,0,2" HorizontalAlignment="Center" Padding="2,0,0,0">Saturation</TextBlock>
-					<Slider Minimum="-1.0" Maximum="1.0" Margin="20,0" StepFrequency="0.01"
-							Visibility="{x:Bind ViewModel.SaturationEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}" 
-							ValueChanged="{x:Bind ViewModel.EnqueueEffect}" 
-							Value="{x:Bind ViewModel.SaturationLevel, Mode=TwoWay}"/>
-
-					<TextBlock Text="Hue" HorizontalAlignment="Center"
-							   Visibility="{x:Bind ViewModel.SaturationEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"/>
-
-					<Slider Minimum="-1.0" Maximum="1.0" Margin="20,0" StepFrequency="0.01"
-							Visibility="{x:Bind ViewModel.SaturationEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}" 
-							ValueChanged="{x:Bind ViewModel.EnqueueEffect}"   
-							Value="{x:Bind ViewModel.SaturationHueLevel, Mode=TwoWay}"/>
-				</StackPanel>
-
-				<!--Negative-->
-				<StackPanel Margin="10" Background="{ThemeResource SystemControlForegroundAltMediumHighBrush}" 
-							Visibility="{x:Bind ViewModel.NegationEnabled, Converter={StaticResource TrueToVis}, Mode=OneWay}"
-							RightTapped="StackPanel_RightTapped">
-					<FlyoutBase.AttachedFlyout>
-						<MenuFlyout>
-							<MenuFlyoutItem Command = "{x:Bind RemoveCommand}"
-											CommandParameter = "Negation Modifier"
-											Text="Remove"/>
-						</MenuFlyout>
-					</FlyoutBase.AttachedFlyout>
-					<TextBlock FontSize="24" Margin="5,2,0,2" HorizontalAlignment="Center" Padding="2,0,0,0">Negation</TextBlock>
-				</StackPanel>
-
-			</StackPanel>
-
-		</ScrollViewer>
 	</Grid>
 </controls:PageBase>
