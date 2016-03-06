@@ -11,19 +11,22 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using ImageLab.Helpers;
 
 namespace ImageLab.ViewModels
 {
 	public class SlideShowViewModel : ViewModel
 	{
 		private INavigationService _navigationService;
-		public SlideShowViewModel(INavigationService navigationService)
+		private List<ImageContainer> _images;
+		private bool _flag;
+		private ApplicationState _appState;
+
+		public SlideShowViewModel(INavigationService navigationService, ApplicationState appState)
 		{
 			_navigationService = navigationService;
+			this._appState = appState;
 		}
-
-		List<ImageContainer> _images;
-		private bool _flag;
 
 		public SoftwareBitmapSource CurrentImage { get; set; } = new SoftwareBitmapSource();
 
@@ -31,7 +34,7 @@ namespace ImageLab.ViewModels
 		{
 			base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
 
-			_images = navigationParameter as List<ImageContainer>;
+			_images = _appState.Containers;
 
 			SystemNavigationManager.GetForCurrentView().BackRequested += NavigateBackRequested;
 			SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =

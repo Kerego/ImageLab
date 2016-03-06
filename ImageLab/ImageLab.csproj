@@ -109,6 +109,7 @@
     <Compile Include="Controls\PageBase.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\ObjectToWarpingConverter.cs" />
+    <Compile Include="Helpers\ApplicationState.cs" />
     <Compile Include="Interfaces\IImageGridPageViewModel.cs" />
     <Compile Include="Interfaces\IMainPageViewModel.cs" />
     <Compile Include="Interfaces\ISlideShowViewModel.cs" />

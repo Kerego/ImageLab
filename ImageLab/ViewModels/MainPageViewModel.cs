@@ -17,6 +17,7 @@ using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using ImageLab.Helpers;
 
 namespace ImageLab.ViewModels
 {
@@ -54,7 +55,8 @@ namespace ImageLab.ViewModels
 		public DelegateCommand<Type> AddCommand { get; set; }
 		public DelegateCommand<EffectContainer> RemoveCommand { get; set; }
 
-		public MainPageViewModel(INavigationService navigationService)
+
+		public MainPageViewModel(INavigationService navigationService, ApplicationState appState)
 		{
 			_navigationService = navigationService;
 			RemoveCommand = new DelegateCommand<EffectContainer>(async x =>
@@ -71,13 +73,15 @@ namespace ImageLab.ViewModels
 				await EnqueueEffect();
 			});
 
+			this._appState = appState;
 		}
 
 		public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
 		{
 			base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
 
-			var container = navigationParameter as ImageContainer;
+			var containerIndex = (int)navigationParameter;
+			var container = _appState.Containers[containerIndex];
 			CurrentImage = container.Image;
 			_currentFile = container.File;
 
@@ -151,6 +155,8 @@ namespace ImageLab.ViewModels
 		}
 
 		int lastChange = -1;
+		private ApplicationState _appState;
+
 		public async Task EnqueueEffect()
 		{
 			lastChange++;

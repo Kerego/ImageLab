@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Navigation;
 using System.Collections.Generic;
 using Windows.UI.Core;
 using static ImageLab.Constants.Constants;
+using ImageLab.Helpers;
 
 namespace ImageLab.ViewModels
 {
@@ -30,8 +31,9 @@ namespace ImageLab.ViewModels
 		public bool IsEmpty { get { return !ContainerList.Any(); } }
 
 		private FileOpenPicker _picker = new FileOpenPicker();
-	
-		public ImageGridPageViewModel(INavigationService navigationService)
+		private ApplicationState _appState;
+
+		public ImageGridPageViewModel(INavigationService navigationService, ApplicationState appState)
 		{
 			_navigationService = navigationService;
 			RemoveCommand = new DelegateCommand<ImageContainer>(x =>
@@ -41,29 +43,29 @@ namespace ImageLab.ViewModels
 			});
 			EditCommand = new DelegateCommand<ImageContainer>(x =>
 			{
-				_navigationService.Navigate(Experiences.Main.ToString(), x);
+				_navigationService.Navigate(Experiences.Main.ToString(), ContainerList.IndexOf(x));
 			});
 
 			_picker.FileTypeFilter.Add(".png");
 			_picker.FileTypeFilter.Add(".bmp");
 			_picker.FileTypeFilter.Add(".jpg");
 			_picker.FileTypeFilter.Add(".jpeg");
+			this._appState = appState;
 		}
 
 		public override void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
 		{
 			base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
 
-			if (viewModelState.ContainsKey("containers"))
+			if(_appState.Containers != null)
 			{
-				var items = viewModelState["containers"] as IEnumerable<ImageContainer>;
-				//if(items.Any())
-				//	await ProcessFiles(items.Select(x => x.File));
-				foreach(var item in items)
+
+				foreach (var item in _appState.Containers)
 				{
 					ContainerList.Add(item);
 				}
 			}
+
 
 			SystemNavigationManager.GetForCurrentView().BackRequested += NavigateBackRequested; ;
 			SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
@@ -75,7 +77,7 @@ namespace ImageLab.ViewModels
 		public override void OnNavigatedFrom(Dictionary<string, object> viewModelState, bool suspending)
 		{
 			base.OnNavigatedFrom(viewModelState, suspending);
-			viewModelState["containers"] = ContainerList;
+			_appState.Containers = ContainerList.ToList();
 			SystemNavigationManager.GetForCurrentView().BackRequested -= NavigateBackRequested;
 		}
 
@@ -108,7 +110,7 @@ namespace ImageLab.ViewModels
 
 		public async Task StartSlideShow()
 		{
-			_navigationService.Navigate(Experiences.SlideShow.ToString(), ContainerList.ToList());
+			_navigationService.Navigate(Experiences.SlideShow.ToString(), 0);
 		}
 
 		public async Task ProcessFiles(IEnumerable<StorageFile> files)

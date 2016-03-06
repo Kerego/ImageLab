@@ -22,6 +22,7 @@ using Windows.UI.Core;
 using static ImageLab.Constants.Constants;
 using Windows.UI.ViewManagement;
 using Windows.UI;
+using ImageLab.Helpers;
 
 namespace ImageLab
 {
@@ -44,9 +45,10 @@ namespace ImageLab
 
 		protected override Task OnInitializeAsync(IActivatedEventArgs args)
 		{
-			ViewModelLocationProvider.Register(typeof(MainPage).ToString(), () => new MainPageViewModel(NavigationService));
-			ViewModelLocationProvider.Register(typeof(ImageGridPage).ToString(), () => new ImageGridPageViewModel(NavigationService));
-			ViewModelLocationProvider.Register(typeof(SlideShowPage).ToString(), () => new SlideShowViewModel(NavigationService));
+			var _appState = new ApplicationState();
+			ViewModelLocationProvider.Register(typeof(MainPage).ToString(), () => new MainPageViewModel(NavigationService, _appState));
+			ViewModelLocationProvider.Register(typeof(ImageGridPage).ToString(), () => new ImageGridPageViewModel(NavigationService, _appState));
+			ViewModelLocationProvider.Register(typeof(SlideShowPage).ToString(), () => new SlideShowViewModel(NavigationService, _appState));
 			var title = ApplicationView.GetForCurrentView().TitleBar;
 			title.BackgroundColor = Colors.Black;
 			title.ButtonBackgroundColor = Colors.Black;
